@@ -14,19 +14,32 @@ def about():
     posts_data = Post()
     return render_template("about.html", blog_posts = posts_data)
 
-@app.route('/contact')
+@app.get('/contact')
 def contact():
     return render_template("contact.html")
 
-@app.route('/form-entry', methods=['GET','POST'])
-def receive_data():
-    if request.method == 'POST':
-        print(request.form['name'])
-        print(request.form['email'])
-        print(request.form['phone'])
-        print(request.form['message'])
+@app.post('/contact')
+def get_contact():
+    print(request.form['name'])
+    print(request.form['email'])
+    print(request.form['phone'])
+    print(request.form['message'])
+    success_message = 'Message Sent!'
+    
+    return render_template('contact.html', message=success_message)
+
+
+
+
+# @app.route('/', methods=['GET','POST'])
+# def receive_data():
+#     if request.method == 'POST':
+#         print(request.form['name'])
+#         print(request.form['email'])
+#         print(request.form['phone'])
+#         print(request.form['message'])
         
-    return '<h1>Message Sent! {{name}} {{email}} {{phone}} {{message}}</h1>'
+#     return '<h1>Message Sent!</h1>'
 
 @app.route('/post/<number>')
 def post(number):
