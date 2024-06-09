@@ -1,5 +1,7 @@
 from flask import Flask, render_template, request
 from post import Post
+import smtplib
+from email_config import email
 
 app = Flask(__name__)
 
@@ -20,15 +22,34 @@ def contact():
 
 @app.post('/contact')
 def get_contact():
-    print(request.form['name'])
-    print(request.form['email'])
-    print(request.form['phone'])
-    print(request.form['message'])
+    name =request.form['name']
+    email =request.form['email']
+    phone =request.form['phone']
+    message =request.form['message']
+    
+    email_text = {
+        'name':name,
+        'phone':phone,
+        'email':email,
+        'message':message,
+    }
+    text = ''
+    for key, value in email_text.items():
+        text += f'{key} : {value},\n'
+    
+    print(text)
+    send_email(text)
+    
     success_message = 'Message Sent!'
     
     return render_template('contact.html', message=success_message)
 
-
+def send_email(message):
+    with smtplib.SMTP("smtp.gmail.com", port=587) as connection:
+        connection.starttls()
+        connection.login(user=email['address'], password=email['password'])
+        connection.sendmail(from_addr=email['address'], to_addrs=email['address'], msg=message)
+        print(message)
 
 
 # @app.route('/', methods=['GET','POST'])
